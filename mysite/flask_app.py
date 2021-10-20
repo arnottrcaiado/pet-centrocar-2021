@@ -23,6 +23,10 @@ app = Flask(__name__)
 def hello_world():
     return 'Mensagem aqui'
 
+#
+# endpoint para busca de nomes e localização do sexo
+# https://ceontrocarPet;pythonanywhere.com/buscasexo?nome=PAULO
+#
 @app.route('/buscasexo', methods=['GET'] )
 def procNome( ):
     nome = request.args.get('nome') # obtem parametro da url . ?nome=JOSE
@@ -34,7 +38,9 @@ def procNome( ):
             sexEncontrado = busca['classification'].to_list()
             return json.dumps({"Nome": nomeEncontrado[0], "Sexo" : sexEncontrado[0] })
         else:
-            return json.dumps({"Nome" : nome, "Sexo": "**Inexistente**"})
+            nome, sexo = procNomes( nome )
+            return json.dumps({"Nome" : nome, "Sexo": sexo })
+
     else : # não foi encontrado parâmetro na linha url - verificar header e parametros
         chave = request.headers.get('secret-key')
         if chave == keys.key_header_nome : # chave de autenticação para a API
@@ -47,8 +53,21 @@ def procNome( ):
                     sexEncontrado = busca['classification'].to_list()
                     return json.dumps({"Nome": nomeEncontrado[0], "Sexo" : sexEncontrado[0] })
                 else:
-                    return json.dumps({"Nome" : nome, "Sexo": "**Inexistente**"})
+                    nome, sexo = procNomes( nome )
+                    return json.dumps({"Nome" : nome, "Sexo": sexo })
             else :
                 return json.dumps({"Nome" : "**incompleto**", "Sexo": "**Inexistente**"})
         return json.dumps({"Erro" : "**autentic**" })
+
+# -------------------------------------------------------------------------------------------
+# funcao para percorrer o dataframe procurando os nomes alterativos
+# chamada quando o nome principal, indexado, não é localizado
+def procNomes( nome ) :
+    for i in range(len(df)) :
+      nam = df['names'][i].split(sep='|')
+      for j in range(len(nam)):
+        if nome == nam[j] :
+            sex = df['classification'][i]
+            return str(nam[j]), str(sex)
+    return str(nome), "**Inexistente**"
 
