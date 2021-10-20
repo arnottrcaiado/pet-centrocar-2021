@@ -21,7 +21,7 @@ def hello_world():
 
 @app.route('/buscasexo', methods=['GET'] )
 def procNome( ):
-    nome = request.args.get('nome')
+    nome = request.args.get('nome') # obtem parametro da url . ?nome=JOSE
     if nome != None :
         nome = nome.upper()
         busca = df.loc[df['name']== nome]
@@ -33,7 +33,7 @@ def procNome( ):
             return json.dumps({"Nome" : nome, "Sexo": "**Inexistente**"})
     else : # não foi encontrado parâmetro na linha url - verificar header e parametros
         chave = request.headers.get('secret-key')
-        if chave == '123456789MmNnAa':
+        if chave == '123456789MmNnAa': # chave de autenticação para a API
             nome = request.form.get('nome')
             if nome != None :
                 nome = nome.upper()
