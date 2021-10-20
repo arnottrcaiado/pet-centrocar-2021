@@ -8,7 +8,11 @@
 from flask import Flask, json, request
 import pandas as pd
 
-arquivo = '/home/centrocarPet/mysite/dados/grupos.csv'
+import sys
+sys.path.insert(0,'/home/centrocarPet')
+import pet_headers as keys                  # chaves da api e segurança
+
+arquivo = '/home/centrocarPet/mysite/dados/grupos.csv'  # arquivo com nomes
 
 df = pd.read_csv( arquivo )
 
@@ -33,7 +37,7 @@ def procNome( ):
             return json.dumps({"Nome" : nome, "Sexo": "**Inexistente**"})
     else : # não foi encontrado parâmetro na linha url - verificar header e parametros
         chave = request.headers.get('secret-key')
-        if chave == '123456789MmNnAa': # chave de autenticação para a API
+        if chave == keys.key_header_nome : # chave de autenticação para a API
             nome = request.form.get('nome')
             if nome != None :
                 nome = nome.upper()
