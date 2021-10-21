@@ -21,11 +21,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Mensagem aqui'
+    return 'PET-Centrocar. Use https://centrocarPet.pythonanywhere.com/buscasexo?nome=PAULO'
 
 #
 # endpoint para busca de nomes e localização do sexo
-# https://ceontrocarPet;pythonanywhere.com/buscasexo?nome=PAULO
+# https://centrocarPet.pythonanywhere.com/buscasexo?nome=PAULO
 #
 @app.route('/buscasexo', methods=['GET'] )
 def procNome( ):
@@ -56,7 +56,7 @@ def procNome( ):
                     nome, sexo = procNomes( nome )
                     return json.dumps({"Nome" : nome, "Sexo": sexo })
             else :
-                return json.dumps({"Nome" : "**incompleto**", "Sexo": "**Inexistente**"})
+                return json.dumps({"Nome" : "**incompleto**", "Sexo": "*NotSearch**"})
         return json.dumps({"Erro" : "**autentic**" })
 
 # -------------------------------------------------------------------------------------------
@@ -69,5 +69,5 @@ def procNomes( nome ) :
         if nome == nam[j] :
             sex = df['classification'][i]
             return str(nam[j]), str(sex)
-    return str(nome), "**Inexistente**"
+    return str(nome), "*NotFound*"
 
