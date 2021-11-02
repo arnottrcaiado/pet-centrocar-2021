@@ -118,6 +118,38 @@ def exgraph() :
 
     return render_template( 'graficos.html', grafico1=grafico1, grafico2 = grafico2, grafico3=grafico3 )
 
+
+
+# API para gerar um grafico x y
+@app.route('/grafxy', methods=['GET','POST'])
+def grafxy ():
+
+    if  request.form.get('x') != None and  request.form.get('y') != None  and request.form.get('nomes') != None :
+
+        x = request.form.get('x').split(sep=',')    # obtem valores para label eixo x
+        y = request.form.get('y').split(sep=',')    # obtem valores para eyxo y - converter para numero
+        nomes = request.form.get('nomes').split(sep=',')    # obtem valores para nomes das colunas
+
+        for i in range(len(y)) :    # transforma os valores para numeros
+            y[i] = float(y[i])
+
+
+        df = pd.DataFrame( list(zip(x,y)), columns=nomes, index = x)    # monta o dataframe
+        img = io.BytesIO()
+        df.plot( kind = 'bar', color='g')
+        plt.title(' TITULO - Exemplo x y ' )
+        plt.show()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        graph_url = base64.b64encode(img.getvalue()).decode()
+        plt.close()
+        grafico= build_graph( graph_url )
+
+        return render_template( 'graficoXY.html', grafico1=grafico )   # mostra a tela com grafico
+    else :
+        return json.dumps({ "ERRO": "Faltam Parâmetros X, Y" } )
+
+
 # funcao para dar o tratamento final para o grafico gerado - para retornar url
 def build_graph(graph_url):
     return 'data:image/png;base64,{}'.format(graph_url)
