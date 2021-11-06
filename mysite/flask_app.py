@@ -155,6 +155,29 @@ def grafxy ():
         return json.dumps({ "ERRO": "Faltam Parâmetros X, Y" } )
 
 
+# API para gerar um grafico x y com chart.js - biblioteca bastante poderosa para graficos
+@app.route('/grafxyJs', methods=['GET','POST'])
+def grafxyJs ():
+    recebido = request.json
+    if  request.form.get('x') != None and  request.form.get('y') != None  and request.form.get('nomes') != None or recebido != None :
+        if recebido == None : # caso os parametros sejam recebidos diferentes de formato json
+            x = request.form.get('x').split(sep=',')    # obtem valores para label eixo x
+            y = request.form.get('y').split(sep=',')    # obtem valores para eyxo y - converter para numero
+            nomes = request.form.get('nomes').split(sep=',')    # obtem valores para nomes das colunas
+            y = list(map(lambda x : float(x), y))   # o mesmo que o anterior , na forma de funcao lambda - transforma os valores em float
+            '''
+            for i in range(len(y)) :    # transforma os valores para numeros
+                y[i] = float(y[i])
+            '''
+        else : # caso seja recebido no formato json
+            x = recebido['x']
+            y = recebido['y']
+            nomes = recebido['nomes']
+
+        return render_template( 'graficoXY_JS.html', labels=x, values=y )   # mostra a tela com grafico
+    else :
+        return json.dumps({ "ERRO": "Faltam Parâmetros X, Y" } )
+
 # funcao para dar o tratamento final para o grafico gerado - para retornar url
 def build_graph(graph_url):
     return 'data:image/png;base64,{}'.format(graph_url)
