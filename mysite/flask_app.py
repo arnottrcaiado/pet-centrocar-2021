@@ -27,7 +27,6 @@ app = Flask(__name__)
 def hello_world():
     return 'PET-Centrocar. Use https://centrocarPet.pythonanywhere.com/buscasexo?nome=PAULO'
 
-#
 # endpoint para busca de nomes e localização do sexo
 # https://centrocarPet.pythonanywhere.com/buscasexo?nome=PAULO
 #
@@ -178,6 +177,21 @@ def grafxyJs ():
     else :
         return json.dumps({ "ERRO": "Faltam Parâmetros X, Y" } )
 
-# funcao para dar o tratamento final para o grafico gerado - para retornar url
+# exemplo de grafico com uso do chart.js
+@app.route('/gjs')
+def graf():
+    params = {
+        "x":["1","2","3","4","5"],
+        "y":[100,120,40,50,80],
+        "nomes":["Eq","Valores"]
+    }
+    x = params['x']
+    y = params['y']
+    nomes = params['nomes']
+    return render_template( 'graficoXY_JS.html', labels=x, values=y )   # mostra a tela com grafico
+#
+
+
+# API para dar o tratamento final para o grafico gerado - para retornar url
 def build_graph(graph_url):
     return 'data:image/png;base64,{}'.format(graph_url)
