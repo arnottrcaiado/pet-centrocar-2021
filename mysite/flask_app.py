@@ -34,7 +34,10 @@ def hello_world():
 def procNome( ):
     nome = request.args.get('nome') # obtem parametro da url . ?nome=JOSE
     if nome != None :
+        lnome = nome.split()
+        nome = lnome[0]
         nome = nome.upper()
+
         busca = df.loc[df['name']== nome]
         if len(busca) > 0 :
             nomeEncontrado = busca['name'].to_list()
@@ -49,7 +52,10 @@ def procNome( ):
         if chave == keys.key_header_nome : # chave de autenticação para a API
             nome = request.form.get('nome')
             if nome != None :
+                lnome = nome.split()
+                nome = lnome[0]
                 nome = nome.upper()
+
                 busca = df.loc[df['name']== nome]
                 if len(busca) > 0 :
                     nomeEncontrado = busca['name'].to_list()
@@ -181,13 +187,12 @@ def grafxyJs ():
 @app.route('/gjs')
 def graf():
     params = {
-        "x":["1","2","3","4","5"],
-        "y":[100,120,40,50,80],
+        "x":["A","B","C","D","E","F","G"],
+        "y":[100,120,100,50,80,90,120],
         "nomes":["Eq","Valores"]
     }
     x = params['x']
     y = params['y']
-    nomes = params['nomes']
     return render_template( 'graficoXY_JS.html', labels=x, values=y )   # mostra a tela com grafico
 #
 
