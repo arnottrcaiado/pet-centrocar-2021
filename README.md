@@ -9,6 +9,12 @@ Testes criados para apoio ao projeto - pythonanywhere.com
 https://www.pythonanywhere.com/user/centrocarPet/
 
 
+# dataset para validar e classificar nomes, identificando o gênero ( sexo )
+# https://brasil.io/dataset/genero-nomes/nomes/
+
+https://www.centrocarpet.pythonanywhere.com/buscasexo?nome=Pedro
+
+
 # rota para gerar grafico de barras
 # na forma de API
 #
