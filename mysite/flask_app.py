@@ -124,7 +124,7 @@ def exgraph() :
     return render_template( 'graficos.html', grafico1=grafico1, grafico2 = grafico2, grafico3=grafico3 )
 
 
-
+#-------------------------------------------------------------------------------------------------------------------------------------
 # API para gerar um grafico x y
 @app.route('/grafxy', methods=['GET','POST'])
 def grafxy ():
@@ -159,8 +159,9 @@ def grafxy ():
     else :
         return json.dumps({ "ERRO": "Faltam Parâmetros X, Y" } )
 
-
+# -----------------------------------------------------------------------------------------------------------
 # API para gerar um grafico x y com chart.js - biblioteca bastante poderosa para graficos
+# Use https://centrocarPet.pythonanywhere.com/grafxyJs
 @app.route('/grafxyJs', methods=['GET','POST'])
 def grafxyJs ():
     recebido = request.json
@@ -183,7 +184,9 @@ def grafxyJs ():
     else :
         return json.dumps({ "ERRO": "Faltam Parâmetros X, Y" } )
 
+# ------------------------------------------------------------------
 # exemplo de grafico com uso do chart.js
+# Use https://centrocarPet.pythonanywhere.com/gjs
 @app.route('/gjs')
 def graf():
     params = {
@@ -191,12 +194,23 @@ def graf():
         "y":[100,120,100,50,80,90,120],
         "nomes":["Eq","Valores"]
     }
+    params2 = {
+        "x":["Blue","Red","Cian","Black","Pink","White","Green"],
+        "y":[60,100,40,80,90,70,10],
+        "nomes":["Times","Notas"]
+    }
+
     x = params['x']
     y = params['y']
-    return render_template( 'graficoXY_JS.html', labels=x, values=y )   # mostra a tela com grafico
+    x2=params2['x']
+    y2=params2['y']
+
+    # return render_template( 'graficoXY_JS.html', labels=x, values=y )   # mostra a tela com grafico
+    return render_template( 'graficoXY_JS2.html', labels=x, values=y, labels2=x2, values2=y2 )   # mostra a tela com grafico
+
 #
 
 
-# API para dar o tratamento final para o grafico gerado - para retornar url
+# função para dar o tratamento final para o grafico gerado - para retornar url
 def build_graph(graph_url):
     return 'data:image/png;base64,{}'.format(graph_url)
