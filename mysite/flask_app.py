@@ -71,7 +71,7 @@ def procNome( ):
         return json.dumps({"Erro" : "**autentic**" })
 
 # -------------------------------------------------------------------------------------------
-# funcao para percorrer o dataframe procurando os nomes alterativos
+# funcao para percorrer o dataframe procurando os nomes alternativos
 # chamada quando o nome principal, indexado, não é localizado
 def procNomes( nome ) :
     for i in range(len(df)) :
