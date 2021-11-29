@@ -17,9 +17,11 @@ import base64
 
 
 arquivo = '/home/centrocarPet/mysite/dados/grupos.csv'  # arquivo com nomes
+clientes= '/home/centrocarPet/mysite/dados/Clientes_CodSexo.csv'  # arquivo com cientes - sem nome - apenas codigo, bairro, cidade, sexo
 
-df = pd.read_csv( arquivo )
 
+df  = pd.read_csv( arquivo )
+dfc = pd.read_csv( clientes, sep=';')
 
 app = Flask(__name__)
 
@@ -80,6 +82,46 @@ def procNomes( nome ) :
             return str(nam[j]), str(sex)
     return str(nome), "*NotFound*"
 
+
+
+# endpoint para busca de nomes e localização do cliente por codigo
+# https://centrocarPet.pythonanywhere.com/buscacliente?codigo=100
+#
+@app.route('/buscacliente', methods=['GET'] )
+def procCliente( ):
+    codigo = request.args.get('codigo') # obtem parametro da url . ?codigo=123
+    if codigo != None :
+        busca = dfc.loc[dfc['Codigo']== codigo]
+        if len(busca) > 0 :
+            codigoEncontrado = busca['Codigo'].to_list()
+            bairroEncontrado = busca['Bairro'].to_list()
+            cidadeEncontrado = busca['Cidade'].to_list()
+            sexoEncontrado = busca['Sexo'].to_list()
+            return json.dumps({"Cod":codigoEncontrado[0],"Sexo" : sexoEncontrado[0], "Bairro": bairroEncontrado,"Cidade":cidadeEncontrado[0] })
+        else:
+            return json.dumps({"Codigo" : codigo, "Status": "*Não Encontrado*" })
+
+    else : # não foi encontrado parâmetro na linha url - verificar header e parametros
+        chave = request.headers.get('secret-key')
+        if chave == keys.key_header_nome : # chave de autenticação para a API
+            codigo = request.form.get('Codigo')
+            if codigo != None :
+                busca = dfc.loc[dfc['Codigo']== codigo]
+                if len(busca) > 0 :
+                    codigoEncontrado = busca['Codigo'].to_list()
+                    bairroEncontrado = busca['Bairro'].to_list()
+                    cidadeEncontrado = busca['Cidade'].to_list()
+                    sexoEncontrado = busca['Sexo'].to_list()
+                    return json.dumps({"Cod":codigoEncontrado[0],"Sexo" : sexoEncontrado[0], "Bairro": bairroEncontrado,"Cidade":cidadeEncontrado[0] })
+
+                else:
+                    return json.dumps({"Codigo" : codigo, "Status": "*Não Encontrado*" })
+
+            else :
+                return json.dumps(json.dumps({"Codigo" : codigo, "Status": "*Não Encontrado*" }))
+        return json.dumps({"Erro" : "**autentic**" })
+
+# -------------------------------------------------------------------------------------------
 
 # --------------------------------------------------------------------------------------------
 # sequencia exemlo para gerar um grafico temporario e retorna url para um template
